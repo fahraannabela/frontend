@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase Produk</title>
+    <link href="./output.css" rel="stylesheet" />
+    <style>
+      .category {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+      }
+      .category.AT {
+        background-color: #93c5fd;
+        color: #1d4ed8;
+      }
+      .category.MT {
+        background-color: #fdba74;
+        color: #c2410c;
+      }
+      .category.LT {
+        background-color: #fda4af;
+        color: #b91c1c;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-black">
+    <!-- Navbar -->
+    <nav class="bg-gray-300 text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <img
+          src="https://politekniklp3i-tasikmalaya.ac.id/assets/lp3i-36503943.svg"
+          alt="logo politekniklp3i-tasikmalaya"
+          class="h-10 w-auto mx-auto"
+        />
+        <button id="toggleSidebar" class="text-white focus:outline-none">
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div
+      id="sidebar"
+      class="fixed inset-y-0 left-0 bg-gray-800 text-white w-64 transform -translate-x-full transition-transform duration-300"
+    >
+      <div class="p-4">
+        <h2 class="text-xl font-bold mb-6">Navigation</h2>
+        <ul>
+          <li class="mb-4">
+            <a
+              href="admin.html"
+              class="block py-2 px-4 rounded hover:bg-gray-700"
+              >Admin</a
+            >
+          </li>
+          <li class="mb-4">
+            <a
+              href="index.html"
+              class="block py-2 px-4 rounded hover:bg-gray-700"
+              >Showcase</a
+            >
+          </li>
+          <li>
+            <a
+              href="category.html"
+              class="block py-2 px-4 rounded hover:bg-gray-700"
+              >Categories</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <div class="container mx-auto mt-10 flex-1">
+        <h5 class="text-center mb-2 text-lg font-semibold">
+          Dealer Motor Resmi
+        </h5>
+        <p class="text-center mb-8 text-gray-600">
+          Berikut ini adalah beberapa motor yang tersedia:
+        </p>
+        <div id="products" class="flex flex-wrap justify-center"></div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto text-center">
+          &copy; 2023 Materi kuliah Front End Development by kuningan1 |
+          Politeknik LP3I Kampus Tasikmalaya
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      document
+        .getElementById("toggleSidebar")
+        .addEventListener("click", function () {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.classList.toggle("-translate-x-full");
+          sidebar.classList.toggle("translate-x-0");
+        });
+
+      fetch("http://localhost:3000/products")
+        .then((response) => response.json())
+        .then((data) => {
+          const productsDiv = document.getElementById("products");
+          data.forEach((product) => {
+            const categoryClass = product.category || "LT"; // Default to "LT" if category is undefined
+            const productCard = `
+              <div class="w-full sm:w-1/2 lg:w-1/4 p-4">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                  <img class="w-full h-40 object-cover" src="${
+                    product.image || "#"
+                  }" alt="${product.name || "No Image"}">
+                  <div class="p-4">
+                    <h5 class="text-lg font-bold text-gray-800">${
+                      product.name || "No Name"
+                    }</h5>
+                    <p class="text-gray-600">${
+                      product.description || "No Description"
+                    }</p>
+                    <span class="category ${categoryClass}">${
+              product.category || "No Category"
+            }</span>
+                    <p class="text-lg font-semibold text-gray-900">Rp${(
+                      product.price || 0
+                    ).toLocaleString("id-ID")}</p>
+                  </div>
+                </div>
+              </div>`;
+            productsDiv.innerHTML += productCard;
+          });
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    </script>
+  </body>
+</html>
